@@ -1,10 +1,10 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
-import 'package:test_app/build_app_bar.dart';
-import 'package:test_app/build_bottom_nav_bar.dart';
-import 'package:test_app/date_widget.dart';
-import 'package:test_app/list_data_widget.dart';
+import 'package:todo_thingy/build_app_bar.dart';
+import 'package:todo_thingy/build_bottom_nav_bar.dart';
+import 'package:todo_thingy/date_widget.dart';
+import 'package:todo_thingy/list_data_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,27 +59,30 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Step 1: Sort items by date
-    dataList.sort((a, b) => b["date"].compareTo(a["date"]));
+    // data logic
 
-    // Step 2: Group items by date
+    // sort items by date
+    dataList.sort((a, b) => b["date"].compareTo(a["date"]));
+    // group items by date
     Map<String, List<Map<String, dynamic>>> groups = {};
     for (var item in dataList) {
       String date = item["date"];
       groups.putIfAbsent(date, () => []).add(item);
     }
-    // Step 3: Create widgets for grouped items
+    // create widgets for grouped items
     List<Widget> groupedWidgets = [];
     groups.forEach((date, tasks) {
-      // Add divider widget for date
+      // add divider widget for date
       groupedWidgets.add(dateWidget(date));
-      // Add list data widgets for tasks
+      // add list data widgets for tasks
       for (var task in tasks) {
         groupedWidgets.add(listDataWidget(task, (bool? value) {
           setState(() => task['enabled'] = value!);
         }));
       }
     });
+
+    // app UI logic
 
     return Center(
       child: MaterialApp(

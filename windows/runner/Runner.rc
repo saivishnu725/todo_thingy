@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "me.theunconcernedape" "\0"
-            VALUE "FileDescription", "test_app" "\0"
+            VALUE "FileDescription", "todo_thingy" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "test_app" "\0"
+            VALUE "InternalName", "todo_thingy" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 me.theunconcernedape. All rights reserved." "\0"
-            VALUE "OriginalFilename", "test_app.exe" "\0"
-            VALUE "ProductName", "test_app" "\0"
+            VALUE "OriginalFilename", "todo_thingy.exe" "\0"
+            VALUE "ProductName", "todo_thingy" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

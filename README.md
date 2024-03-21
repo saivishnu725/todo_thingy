@@ -1,4 +1,4 @@
-# test_app
+# todo_thingy
 
 A new Flutter project.
 
