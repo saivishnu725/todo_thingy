@@ -1,12 +1,23 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
+// package files
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+// local files
 import 'package:todo_thingy/build_app_bar.dart';
 import 'package:todo_thingy/build_bottom_nav_bar.dart';
+import 'package:todo_thingy/data/data_manager.dart';
 import 'package:todo_thingy/date_widget.dart';
 import 'package:todo_thingy/list_data_widget.dart';
+import 'package:todo_thingy/pages/second_page.dart';
 
-void main() {
+void main() async {
+  // init the hive
+  await Hive.initFlutter();
+  // open the box
+  var box = await Hive.openBox('todoList5');
+
+  //run the app
   runApp(const MyApp());
 }
 
@@ -17,54 +28,65 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+extension WidgetExt on Widget {
+  Widget wrappedInBuilder() {
+    return Builder(builder: (context) => this);
+  }
+}
+
 class _MyAppState extends State<MyApp> {
-  List<Map<String, dynamic>> dataList = [
-    {
-      'title': 'Home',
-      'category': 'Software',
-      'enabled': true,
-      'date': '21/03/2024',
-    },
-    {
-      'title': 'Profile',
-      'category': 'Icons',
-      'enabled': false,
-      'date': '17/03/2024',
-    },
-    {
-      'title': 'Profile',
-      'category': 'Icons',
-      'enabled': false,
-      'date': '20/03/2024',
-    },
-    {
-      'title': 'Profile',
-      'category': 'Icons',
-      'enabled': false,
-      'date': '17/03/2024',
-    },
-    {
-      'title': 'Profile',
-      'category': 'Icons',
-      'enabled': false,
-      'date': '15/03/2024',
-    },
-    {
-      'title': 'heheh',
-      'category': 'fwe',
-      'enabled': false,
-      'date': '20/03/2024',
-    },
-  ];
+  List<Map<dynamic, dynamic>> dataList = [];
+  int _idCounter = 0;
+
+  // reference the box
+  final _myBox = Hive.box('todoList5');
+
+  void readData() {
+    setState(() {
+      dataList = _myBox.values.cast<Map<dynamic, dynamic>>().toList();
+      _idCounter = dataList.isEmpty ? 0 : findMaxId(dataList) + 1;
+    });
+  }
+  // void deleteData() {}
+  // Future<void> loadData() async {
+  //   await _myBox.openBox();
+  //   setState(() {
+  //     dataList = taskBox.values.toList();
+  //   });
+  // }
+
+  Future<void> writeData(task) async {
+    task['id'] = _idCounter++;
+    await _myBox.add(task);
+    readData(); // Reload data
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     // data logic
 
+    // saveData({
+    //   'title': 'home 4',
+    //   'category': 'internet',
+    //   'enabled': false,
+    //   'date': '22/03/2024',
+    // });
+    readData();
     // sort items by date
     dataList.sort((a, b) => b["date"].compareTo(a["date"]));
     // group items by date
-    Map<String, List<Map<String, dynamic>>> groups = {};
+    Map<dynamic, List<Map<dynamic, dynamic>>> groups = {};
     for (var item in dataList) {
       String date = item["date"];
       groups.putIfAbsent(date, () => []).add(item);
@@ -97,10 +119,22 @@ class _MyAppState extends State<MyApp> {
           body: ListView(
             children: groupedWidgets,
           ),
-          floatingActionButton: const FloatingActionButton(
-            tooltip: 'Increment',
-            onPressed: null,
-            child: Icon(Icons.add),
+          floatingActionButton: Builder(
+            builder: (context) => FloatingActionButton(
+                onPressed: () {
+                  debugPrint("Clicked here!!");
+                  writeData({
+                    'title': 'home 100',
+                    'category': 'instagram',
+                    'enabled': false,
+                    'date': '25/03/2024',
+                  });
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => const InputPage()));
+                },
+                child: const Icon(Icons.add)),
           ),
           bottomNavigationBar: buildBottomNavBar(),
         ),
